@@ -1,4 +1,3 @@
-
 import os
 import sqlite3
 import random
@@ -23,9 +22,10 @@ if not TOKEN:
 
 POCKET_REFERRAL_LINK = "https://pocket-friends.co/r/cvez0moyv8"
 ADMIN_ID = 8385943123
-# ===============================
+
 BUY_IMAGE_URL = "https://i.pinimg.com/originals/65/09/47/65094754459cfa954d89a68ce89c8b15.png"
 SELL_IMAGE_URL = "https://blog.tipranks.com/wp-content/uploads/2025/11/shutterstock_2657968599-750x406.jpg"
+# ===============================
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -109,6 +109,24 @@ def esc_md(text):
     for ch in r'_*[]()~`>#+-=|{}.!':
         text = text.replace(ch, f"\\{ch}")
     return text
+
+
+def get_signal_image_url(direction):
+    if direction == "BUY":
+        return BUY_IMAGE_URL
+    if direction == "SELL":
+        return SELL_IMAGE_URL
+    return None
+
+
+def send_signal_image(chat_id, direction):
+    try:
+        image_url = get_signal_image_url(direction)
+        if not image_url:
+            return
+        bot.send_photo(chat_id, image_url)
+    except Exception as e:
+        print(f"Ошибка отправки картинки: {e}")
 
 
 # ========== БАЗА ДАННЫХ ==========
@@ -1035,6 +1053,8 @@ def generate_signal(message, asset=None, random_asset=False, timeframe=None):
 
         store_signal(user.id, signal_data)
 
+        send_signal_image(message.chat.id, signal_data["direction"])
+
         signal_message = format_signal_message(
             signal_data,
             selected_asset=asset if asset else None,
@@ -1727,6 +1747,8 @@ def handle_asset_callback(call):
 
         store_signal(user_id, signal_data)
 
+        send_signal_image(call.message.chat.id, signal_data["direction"])
+
         signal_message = format_signal_message(
             signal_data,
             selected_asset=asset,
@@ -2052,4 +2074,3 @@ if __name__ == "__main__":
             print("❌ Ошибка при запуске бота:")
             traceback.print_exc()
             time.sleep(5)
-
