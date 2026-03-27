@@ -24,8 +24,8 @@ POCKET_REFERRAL_LINK = "https://pocket-friends.co/r/cvez0moyv8"
 ADMIN_ID = 8385943123
 
 # КАРТИНКИ ДЛЯ СИГНАЛОВ
-BUY_IMAGE_URL = "https://i.pinimg.com/originals/65/09/47/65094754459cfa954d89a68ce89c8b15.png"
-SELL_IMAGE_URL = "https://i.imgur.com/0QK9mJH.png"
+BUY_IMAGE_URL = ""
+SELL_IMAGE_URL = ""
 # ===============================
 
 bot = telebot.TeleBot(TOKEN)
