@@ -2026,10 +2026,13 @@ if __name__ == "__main__":
     print("=" * 60)
 
     try:
+        bot.remove_webhook()
+        time.sleep(1)
         bot_info = bot.get_me()
         print(f"🤖 Имя бота: @{bot_info.username}")
     except Exception:
         print("❌ Не удалось получить информацию о боте")
+        traceback.print_exc()
 
     print(f"📊 Всего активов: {len(ALL_ASSETS)}+")
     print(f"├ Криптовалюты: {len(CRYPTO_ASSETS)}")
@@ -2041,8 +2044,10 @@ if __name__ == "__main__":
 
     while True:
         try:
-            bot.infinity_polling(skip_pending=True, long_polling_timeout=30, timeout=20)
+            print("🔄 polling started...")
+            bot.polling(none_stop=True, interval=0, timeout=20)
         except Exception:
             print("❌ Ошибка при запуске бота:")
             traceback.print_exc()
             time.sleep(5)
+
