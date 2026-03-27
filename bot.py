@@ -1,4 +1,4 @@
-import telebot
+
 import os
 import sqlite3
 import random
@@ -17,7 +17,7 @@ print("🤖 БОТ С СИГНАЛАМИ BINARY OPTIONS + РЕФЕРАЛЬНАЯ
 print("=" * 60)
 
 # ========== НАСТРОЙКИ ==========
-TOKEN = "8358886210:AAG9Cm6eaFxWaz3zUEjRkYklFl7auJYxFRw"
+TOKEN = os.getenv("BOT_TOKEN")
 if not TOKEN:
     raise ValueError("BOT_TOKEN не найден в переменных окружения")
 
