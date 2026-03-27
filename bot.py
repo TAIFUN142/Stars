@@ -1053,19 +1053,19 @@ def generate_signal(message, asset=None, random_asset=False, timeframe=None):
 
         store_signal(user.id, signal_data)
 
-        send_signal_image(message.chat.id, signal_data["direction"])
+signal_message = format_signal_message(
+    signal_data,
+    selected_asset=asset if asset else None,
+    asset_source=asset_source
+)
+bot.send_message(message.chat.id, signal_message, parse_mode="Markdown")
 
-        signal_message = format_signal_message(
-            signal_data,
-            selected_asset=asset if asset else None,
-            asset_source=asset_source
-        )
-        bot.send_message(message.chat.id, signal_message, parse_mode="Markdown")
+send_signal_image(message.chat.id, signal_data["direction"])
 
-        markup = types.InlineKeyboardMarkup()
-        markup.add(types.InlineKeyboardButton("📱 Открыть Pocket Option", url=POCKET_REFERRAL_LINK))
-        bot.send_message(message.chat.id, "🚀 Быстрый переход для торговли:", reply_markup=markup)
-        bot.send_message(message.chat.id, "👇 Используйте меню для дальнейших действий:", reply_markup=create_main_menu())
+markup = types.InlineKeyboardMarkup()
+markup.add(types.InlineKeyboardButton("📱 Открыть Pocket Option", url=POCKET_REFERRAL_LINK))
+bot.send_message(message.chat.id, "🚀 Быстрый переход для торговли:", reply_markup=markup)
+bot.send_message(message.chat.id, "👇 Используйте меню для дальнейших действий:", reply_markup=create_main_menu())
 
     except Exception:
         print("Ошибка в generate_signal:")
