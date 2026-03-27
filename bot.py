@@ -23,8 +23,9 @@ if not TOKEN:
 POCKET_REFERRAL_LINK = "https://pocket-friends.co/r/cvez0moyv8"
 ADMIN_ID = 8385943123
 
-BUY_IMAGE_URL = "https://i.pinimg.com/originals/65/09/47/65094754459cfa954d89a68ce89c8b15.png"
-SELL_IMAGE_URL = "https://blog.tipranks.com/wp-content/uploads/2025/11/shutterstock_2657968599-750x406.jpg"
+# КАРТИНКИ ДЛЯ СИГНАЛОВ
+BUY_IMAGE_URL = "https://i.imgur.com/zf8dJ2p.png"
+SELL_IMAGE_URL = "https://i.imgur.com/0QK9mJH.png"
 # ===============================
 
 bot = telebot.TeleBot(TOKEN)
@@ -111,22 +112,22 @@ def esc_md(text):
     return text
 
 
-def get_signal_image_url(direction):
-    if direction == "BUY":
-        return BUY_IMAGE_URL
-    if direction == "SELL":
-        return SELL_IMAGE_URL
-    return None
-
-
 def send_signal_image(chat_id, direction):
     try:
-        image_url = get_signal_image_url(direction)
+        image_url = None
+
+        if direction == "BUY":
+            image_url = BUY_IMAGE_URL
+        elif direction == "SELL":
+            image_url = SELL_IMAGE_URL
+
         if not image_url:
             return
+
         bot.send_photo(chat_id, image_url)
-    except Exception as e:
-        print(f"Ошибка отправки картинки: {e}")
+    except Exception:
+        print("Ошибка в send_signal_image:")
+        traceback.print_exc()
 
 
 # ========== БАЗА ДАННЫХ ==========
@@ -1053,19 +1054,20 @@ def generate_signal(message, asset=None, random_asset=False, timeframe=None):
 
         store_signal(user.id, signal_data)
 
-signal_message = format_signal_message(
-    signal_data,
-    selected_asset=asset if asset else None,
-    asset_source=asset_source
-)
-bot.send_message(message.chat.id, signal_message, parse_mode="Markdown")
+        signal_message = format_signal_message(
+            signal_data,
+            selected_asset=asset if asset else None,
+            asset_source=asset_source
+        )
+        bot.send_message(message.chat.id, signal_message, parse_mode="Markdown")
 
-send_signal_image(message.chat.id, signal_data["direction"])
+        # КАРТИНКА СНИЗУ ПОСЛЕ ТЕКСТА
+        send_signal_image(message.chat.id, signal_data["direction"])
 
-markup = types.InlineKeyboardMarkup()
-markup.add(types.InlineKeyboardButton("📱 Открыть Pocket Option", url=POCKET_REFERRAL_LINK))
-bot.send_message(message.chat.id, "🚀 Быстрый переход для торговли:", reply_markup=markup)
-bot.send_message(message.chat.id, "👇 Используйте меню для дальнейших действий:", reply_markup=create_main_menu())
+        markup = types.InlineKeyboardMarkup()
+        markup.add(types.InlineKeyboardButton("📱 Открыть Pocket Option", url=POCKET_REFERRAL_LINK))
+        bot.send_message(message.chat.id, "🚀 Быстрый переход для торговли:", reply_markup=markup)
+        bot.send_message(message.chat.id, "👇 Используйте меню для дальнейших действий:", reply_markup=create_main_menu())
 
     except Exception:
         print("Ошибка в generate_signal:")
@@ -1261,7 +1263,7 @@ def registration_handler(message):
 
 3️⃣ **Отправьте мне ваш Pocket Option ID (только цифры)**
 
-4️⃣ **Ожидайте проверки администратором**
+4️⃣ **Ожидайте проверки администратора**
 """
         msg = bot.send_message(message.chat.id, registration_text, parse_mode="Markdown")
         bot.register_next_step_handler(msg, process_pocket_id)
@@ -1747,14 +1749,15 @@ def handle_asset_callback(call):
 
         store_signal(user_id, signal_data)
 
-        send_signal_image(call.message.chat.id, signal_data["direction"])
-
         signal_message = format_signal_message(
             signal_data,
             selected_asset=asset,
             asset_source="🎯 По вашему выбору"
         )
         bot.send_message(call.message.chat.id, signal_message, parse_mode="Markdown")
+
+        # КАРТИНКА СНИЗУ ПОСЛЕ ТЕКСТА
+        send_signal_image(call.message.chat.id, signal_data["direction"])
 
         markup = types.InlineKeyboardMarkup()
         markup.add(types.InlineKeyboardButton("📱 Открыть Pocket Option", url=POCKET_REFERRAL_LINK))
