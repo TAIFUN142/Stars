@@ -24,6 +24,8 @@ if not TOKEN:
 POCKET_REFERRAL_LINK = "https://pocket-friends.co/r/cvez0moyv8"
 ADMIN_ID = 8385943123
 # ===============================
+BUY_IMAGE_URL = "https://i.pinimg.com/originals/65/09/47/65094754459cfa954d89a68ce89c8b15.png"
+SELL_IMAGE_URL = "https://blog.tipranks.com/wp-content/uploads/2025/11/shutterstock_2657968599-750x406.jpg"
 
 bot = telebot.TeleBot(TOKEN)
 
